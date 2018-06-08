@@ -12,5 +12,34 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
+  },
+  module:{
+    rules: [
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              minimize: true
+            }
+          }
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'to-string-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              minimize: true
+            }
+          }
+        ]
+      }
+    ]
   }
 }
