@@ -3,14 +3,3 @@ body {
     margin: 0;
     height: 100%;
 }
-
-div.box {
-    position: absolute;
-    background: blue;
-    width: 200px;
-    height: 100px;
-/*    transition-property: left, top;
-    transition-duration: 1s;
-    transition-timing-function: linear;
-    transition-delay: 0s;*/
-}
