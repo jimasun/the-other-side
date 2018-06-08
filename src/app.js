@@ -4,12 +4,13 @@ let cloudsPath = './clouds/',
     clouds = ['tarot'],
     cloudsData = [],
     cloudSpeed = 5,
-    cloudFloatIntervalFrequency = 50
+    cloudFloatIntervalFrequency = 50,
+    overlay = null
 
 function loadResources(){
     for (let cloud of clouds){
         cloudsData[cloud] = {
-            content: codeToNode(require(cloudsPath + 'tarot/cloud.html')),
+            cloud: codeToNode(require(cloudsPath + 'tarot/cloud.html')),
             // script: require(cloudsPath + 'tarot/script.js'),
             style: codeToStyle(require(cloudsPath + 'tarot/style.css'))
         }
@@ -17,6 +18,9 @@ function loadResources(){
 }
 
 function initClouds(){
+
+    overlay = document.querySelector('#overlay')
+
     for (let cloud of clouds){
         displayCloud(cloud)
         bindCloudEvents(cloud)
@@ -27,9 +31,12 @@ function initClouds(){
 function displayCloud(cloud){
     const cloudData = cloudsData[cloud]
 
-    cloudData.content.appendChild(cloudData.style)
-    cloudData.content.style.left = Math.random() * (document.body.offsetWidth - cloudData.content.offsetWidth) + 'px'
-    cloudData.content.style.top = Math.random() * (document.body.offsetHeight - cloudData.content.offsetHeight) + 'px'
+    cloudData.cloud.appendChild(cloudData.style)
+    cloudData.cloud.style.left = Math.random() * (document.body.offsetWidth - cloudData.cloud.offsetWidth) + 'px'
+    cloudData.cloud.style.top = Math.random() * (document.body.offsetHeight - cloudData.cloud.offsetHeight) + 'px'
+
+    cloudData.content = cloudData.cloud.querySelector('.content')
+    cloudData.content.classList.toggle('closed')
 
     cloudData.float = {
         dirX: Math.random() < .5 ? -1 : 1,
@@ -37,7 +44,7 @@ function displayCloud(cloud){
         paused: false
     }
 
-    document.body.appendChild(cloudData.content)
+    document.body.appendChild(cloudData.cloud)
 }
 
 function floatCloud(cloud){
@@ -46,10 +53,10 @@ function floatCloud(cloud){
 
         if (cloudData.float.paused) return
 
-        let boxLeft = cloudData.content.offsetLeft,
-            boxRight = boxLeft + cloudData.content.offsetWidth,
-            boxTop = cloudData.content.offsetTop,
-            boxBottom = boxTop + cloudData.content.offsetHeight,
+        let boxLeft = cloudData.cloud.offsetLeft,
+            boxRight = boxLeft + cloudData.cloud.offsetWidth,
+            boxTop = cloudData.cloud.offsetTop,
+            boxBottom = boxTop + cloudData.cloud.offsetHeight,
             docWidth = document.body.offsetWidth,
             docHeight = document.body.offsetHeight
 
@@ -59,45 +66,81 @@ function floatCloud(cloud){
         if (boxBottom + cloudSpeed >= docHeight) cloudData.float.dirY = -1
 
         if (cloudData.float.dirX == 1 && boxRight + cloudSpeed <= docWidth){
-            cloudData.content.style.left = cloudData.content.offsetLeft + cloudSpeed + 'px'
+            cloudData.cloud.style.left = cloudData.cloud.offsetLeft + cloudSpeed + 'px'
         }
 
         if (cloudData.float.dirX == -1 && boxLeft - cloudSpeed >= 0){
-            cloudData.content.style.left = cloudData.content.offsetLeft - cloudSpeed + 'px'
+            cloudData.cloud.style.left = cloudData.cloud.offsetLeft - cloudSpeed + 'px'
         }
 
         if (cloudData.float.dirY == 1 && boxBottom + cloudSpeed <= docHeight){
-            cloudData.content.style.top = cloudData.content.offsetTop + cloudSpeed + 'px'
+            cloudData.cloud.style.top = cloudData.cloud.offsetTop + cloudSpeed + 'px'
         }
 
         if (cloudData.float.dirY == -1 && boxTop - cloudSpeed >= 0){
-            cloudData.content.style.top = cloudData.content.offsetTop - cloudSpeed + 'px'
+            cloudData.cloud.style.top = cloudData.cloud.offsetTop - cloudSpeed + 'px'
         }
     }, cloudFloatIntervalFrequency)
 }
 
-function toggleFloatCloud(cloud){
+function bindCloudEvents(cloud){
+    const cloudContent = cloudsData[cloud].cloud
+    cloudContent.addEventListener('mouseleave', function(e){
+        toggleFloatCloud(cloud, e)
+    })
+    cloudContent.addEventListener('mouseover', function(e){
+        toggleFloatCloud(cloud, e)
+    })
+    cloudContent.addEventListener('click', function(e){
+        toggleContent(cloud, e)
+    })
+    overlay.addEventListener('click', function(e){
+        toggleContent(cloud, e)
+    })
+}
+
+function toggleFloatCloud(cloud, e){
+    if (e && ( // mouseleave && cloud && overlay opened
+            e.target === cloudsData[cloud].cloud &&
+            overlay.classList.contains('displayed')
+        )
+    ){
+        return
+    }
+
+    if (e && ( // !cloud && !overlay
+            e.target !== cloudsData[cloud].cloud &&
+            e.target !== overlay
+        )
+    ){
+        return
+    }
+
     cloudsData[cloud].float.paused
     = cloudsData[cloud].float.paused
     ? false
     : true
 }
 
-function bindCloudEvents(cloud){
-    const cloudContent = cloudsData[cloud].content
-    cloudContent.addEventListener('mouseleave', function(e){
-        toggleFloatCloud(cloud)
-    })
-    cloudContent.addEventListener('mouseover', function(e){
-        toggleFloatCloud(cloud)
-    })
-    cloudContent.addEventListener('click', function(e){
-        openCloud(cloud)
-    })
-}
+function toggleContent(cloud, e){
+    if (e && ( // !cloud && ! overlay
+            e.target !== cloudsData[cloud].cloud &&
+            e.target !== overlay
+        )
+    ){
+        return
+    }
 
-function openCloud(cloud){
-    alert(cloud)
+
+    if (e && // overlay clicked (not cloud which will make it move again)
+            e.target === overlay
+    ){
+        toggleFloatCloud(cloud, e);
+    }
+
+    overlay.classList.toggle('displayed')
+    cloudsData[cloud].content.classList.toggle('opened')
+    cloudsData[cloud].content.classList.toggle('closed')
 }
 
 function codeToNode(code){
