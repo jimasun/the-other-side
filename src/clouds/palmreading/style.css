@@ -1,0 +1,9 @@
+#palmreading {
+    background-image: url(src/clouds/palmreading/img/cloud.png);
+}
+
+#palmreading .content {
+    background: red;
+    width: 400px;
+    height: 400px;
+}

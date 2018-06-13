@@ -1,0 +1,9 @@
+#aurareading {
+    background-image: url(src/clouds/aurareading/img/cloud.png);
+}
+
+#aurareading .content {
+    background: red;
+    width: 400px;
+    height: 400px;
+}

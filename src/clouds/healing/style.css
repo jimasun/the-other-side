@@ -1,0 +1,9 @@
+#healing {
+    background-image: url(src/clouds/healing/img/cloud.png);
+}
+
+#healing .content {
+    background: red;
+    width: 400px;
+    height: 400px;
+}

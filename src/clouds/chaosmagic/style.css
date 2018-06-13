@@ -1,0 +1,9 @@
+#chaosmagic {
+    background-image: url(src/clouds/chaosmagic/img/cloud.png);
+}
+
+#chaosmagic .content {
+    background: red;
+    width: 400px;
+    height: 400px;
+}

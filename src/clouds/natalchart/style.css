@@ -1,0 +1,9 @@
+#natalchart {
+    background-image: url(src/clouds/natalchart/img/cloud.png);
+}
+
+#natalchart .content {
+    background: red;
+    width: 400px;
+    height: 400px;
+}
