@@ -1,7 +1,16 @@
 'use strict'
 
-let cloudsPath = './clouds/',
-    clouds = ['tarot'],
+let clouds = [
+        'astrology',
+        'aurareading',
+        'chaosmagic',
+        'clairvoyance',
+        'healing',
+        'natalchart',
+        'palmreading',
+        'tarot'
+    ],
+    cloudsPath = './clouds/',
     cloudsData = [],
     cloudSpeed = 5,
     cloudFloatIntervalFrequency = 50,
@@ -10,9 +19,10 @@ let cloudsPath = './clouds/',
 function loadResources(){
     for (let cloud of clouds){
         cloudsData[cloud] = {
-            cloud: codeToNode(require(cloudsPath + 'tarot/cloud.html')),
-            // script: require(cloudsPath + 'tarot/script.js'),
-            style: codeToStyle(require(cloudsPath + 'tarot/style.css'))
+            cloud: codeToNode(require(cloudsPath + cloud + '/cloud.html')),
+            // script: require(cloudsPath + cloud + '/script.js'),
+            style: codeToStyle(require(cloudsPath + cloud + '/style.css')),
+            content: null
         }
     }
 }
@@ -20,6 +30,10 @@ function loadResources(){
 function initClouds(){
 
     overlay = document.querySelector('#overlay')
+
+    overlay.addEventListener('click', function(e){
+        closeContent(e)
+    })
 
     for (let cloud of clouds){
         displayCloud(cloud)
@@ -45,6 +59,19 @@ function displayCloud(cloud){
     }
 
     document.body.appendChild(cloudData.cloud)
+}
+
+function bindCloudEvents(cloud){
+    const cloudContent = cloudsData[cloud].cloud
+    cloudContent.addEventListener('mouseleave', function(e){
+        toggleFloatCloud(cloud, e)
+    })
+    cloudContent.addEventListener('mouseover', function(e){
+        toggleFloatCloud(cloud, e)
+    })
+    cloudContent.addEventListener('click', function(e){
+        openContent(cloud, e)
+    })
 }
 
 function floatCloud(cloud){
@@ -83,35 +110,10 @@ function floatCloud(cloud){
     }, cloudFloatIntervalFrequency)
 }
 
-function bindCloudEvents(cloud){
-    const cloudContent = cloudsData[cloud].cloud
-    cloudContent.addEventListener('mouseleave', function(e){
-        toggleFloatCloud(cloud, e)
-    })
-    cloudContent.addEventListener('mouseover', function(e){
-        toggleFloatCloud(cloud, e)
-    })
-    cloudContent.addEventListener('click', function(e){
-        toggleContent(cloud, e)
-    })
-    overlay.addEventListener('click', function(e){
-        toggleContent(cloud, e)
-    })
-}
-
 function toggleFloatCloud(cloud, e){
-    if (e && ( // mouseleave && cloud && overlay opened
-            e.target === cloudsData[cloud].cloud &&
-            overlay.classList.contains('displayed')
-        )
-    ){
-        return
-    }
-
-    if (e && ( // !cloud && !overlay
-            e.target !== cloudsData[cloud].cloud &&
-            e.target !== overlay
-        )
+    if (
+            (e && e.target !== cloudsData[cloud].cloud)
+            || overlay.classList.contains('displayed')
     ){
         return
     }
@@ -122,25 +124,38 @@ function toggleFloatCloud(cloud, e){
     : true
 }
 
-function toggleContent(cloud, e){
-    if (e && ( // !cloud && ! overlay
-            e.target !== cloudsData[cloud].cloud &&
-            e.target !== overlay
-        )
+function openContent(cloud, e){
+    if (
+            (e && e.target !== cloudsData[cloud].cloud)
+            || overlay.classList.contains('displayed')
     ){
         return
     }
 
+    overlay.classList.add('displayed')
+    cloudsData[cloud].content.classList.add('opened')
+    cloudsData[cloud].content.classList.remove('closed')
+}
 
-    if (e && // overlay clicked (not cloud which will make it move again)
-            e.target === overlay
+function closeContent(e){
+    if (
+            (e && e.target !== overlay)
+            || !overlay.classList.contains('displayed')
     ){
-        toggleFloatCloud(cloud, e);
+        return
     }
 
-    overlay.classList.toggle('displayed')
-    cloudsData[cloud].content.classList.toggle('opened')
-    cloudsData[cloud].content.classList.toggle('closed')
+    overlay.classList.remove('displayed')
+
+    for (let cloud of clouds){
+        const c = cloudsData[cloud]
+
+        if (c.float.paused){
+            c.float.paused = false
+            c.content.classList.add('closed')
+            c.content.classList.remove('opened')
+        }
+    }
 }
 
 function codeToNode(code){

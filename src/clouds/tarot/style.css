@@ -1,7 +1,5 @@
 #tarot {
-    background: blue;
-    width: 200px;
-    height: 100px;
+    background-image: url(src/clouds/tarot/img/cloud.png);
 }
 
 #tarot .content {

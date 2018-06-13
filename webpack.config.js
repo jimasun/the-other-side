@@ -35,10 +35,18 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              root: '/',
+              url: false,
               minimize: true
             }
           }
         ]
+      },
+      {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+        }
       }
     ]
   }

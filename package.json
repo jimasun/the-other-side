@@ -32,8 +32,8 @@
   "homepage": "https://bitbucket.org/jimasun/tos#readme",
   "devDependencies": {
     "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
     "html-loader": "^0.5.5",
-    "npm-watch": "^0.3.0",
     "to-string-loader": "^1.1.5",
     "webpack": "^4.11.1",
     "webpack-cli": "^3.0.2"
@@ -42,3 +42,4 @@
     "simplex-noise": "^2.4.0"
   }
 }
+co
