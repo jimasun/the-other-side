@@ -1,6 +1,6 @@
 'use strict'
 
-let clouds = [
+const clouds = [
         'astrology',
         'aurareading',
         'chaosmagic',
@@ -13,8 +13,16 @@ let clouds = [
     cloudsPath = './clouds/',
     cloudsData = [],
     cloudSpeed = 5,
-    cloudFloatIntervalFrequency = 50,
-    overlay = null
+    cloudFloatIntervalFrequency = 100,
+    overlay = document.querySelector('#overlay'),
+    header = document.querySelector('#header'),
+
+    topmostPos = header.offsetHeight,
+    docHeight = document.body.offsetHeight - topmostPos,
+    docWidth = document.body.offsetWidth,
+    cloudSpace = docHeight / clouds.length,
+    cloudHeight = .8 * cloudSpace,
+    maxHeightVar = .2 * cloudSpace
 
 function loadResources(){
     for (let cloud of clouds){
@@ -29,8 +37,6 @@ function loadResources(){
 
 function initClouds(){
 
-    overlay = document.querySelector('#overlay')
-
     overlay.addEventListener('click', function(e){
         closeContent(e)
     })
@@ -43,22 +49,40 @@ function initClouds(){
 }
 
 function displayCloud(cloud){
-    const cloudData = cloudsData[cloud]
-
-    cloudData.cloud.appendChild(cloudData.style)
-    cloudData.cloud.style.left = Math.random() * (document.body.offsetWidth - cloudData.cloud.offsetWidth) + 'px'
-    cloudData.cloud.style.top = Math.random() * (document.body.offsetHeight - cloudData.cloud.offsetHeight) + 'px'
+    const cloudData = cloudsData[cloud],
+          variateHeight = Math.random() * maxHeightVar * (Math.random() < .5 ? -1 : 1)
 
     cloudData.content = cloudData.cloud.querySelector('.content')
     cloudData.content.classList.toggle('closed')
 
     cloudData.float = {
         dirX: Math.random() < .5 ? -1 : 1,
-        dirY: Math.random() < .5 ? -1 : 1,
+        posX: Math.random() * docWidth,
+        posY: cloudSpace * clouds.indexOf(cloud) + variateHeight,
         paused: false
     }
 
+    if (cloudData.float.posX < 0){
+        cloudData.float.posX = 0
+    }
+
+    if (cloudData.float.posY < topmostPos){
+        cloudData.float.posY = topmostPos
+    }
+
+    if (cloudData.float.posY + cloudHeight > docHeight){
+        cloudData.float.posY = docHeight - cloudHeight / 2
+    }
+
+    cloudData.cloud.appendChild(cloudData.style)
     document.body.appendChild(cloudData.cloud)
+
+    if (cloudData.float.posX + cloudData.cloud.offsetWidth > docWidth){
+        cloudData.float.posX = docWidth - cloudData.cloud.offsetWidth
+    }
+
+    cloudData.cloud.style.left = `${cloudData.float.posX}px`
+    cloudData.cloud.style.top = `${cloudData.float.posY}px`
 }
 
 function bindCloudEvents(cloud){

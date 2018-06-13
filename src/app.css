@@ -3,6 +3,7 @@ body,
 .container {
     margin: 0;
     height: 100%;
+    overflow: hidden;
 }
 
 .header {
@@ -23,9 +24,8 @@ body,
 .cloud {
     position: absolute;
     transition-property: left, top;
-    /*transition-duration: 1s;*/
-    /*transition-timing-function: linear;*/
-    /*transition-delay: 0s;*/
+    transition-duration: .1s;
+    transition-timing-function: linear;
     background-position: center;
     background-size: cover;
     width: 210px;
