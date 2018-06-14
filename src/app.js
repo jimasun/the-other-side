@@ -1,5 +1,7 @@
 'use strict'
 
+const SimpleScrollbar = require('simple-scrollbar')
+
 const clouds = [
         'astrology',
         'aurareading',
@@ -15,6 +17,7 @@ const clouds = [
     cloudSpeed = 5,
     cloudFloatIntervalFrequency = 100,
     overlay = document.querySelector('#overlay'),
+    close = document.querySelector('#close'),
     header = document.querySelector('#header'),
 
     topmostPos = header.offsetHeight,
@@ -37,7 +40,14 @@ function loadResources(){
 
 function initClouds(){
 
+    overlay.classList.toggle('closed')
+    close.classList.toggle('closed')
+
     overlay.addEventListener('click', function(e){
+        closeContent(e)
+    })
+
+    close.addEventListener('click', function(e){
         closeContent(e)
     })
 
@@ -52,6 +62,7 @@ function displayCloud(cloud){
     const cloudData = cloudsData[cloud],
           variateHeight = Math.random() * maxHeightVar * (Math.random() < .5 ? -1 : 1)
 
+    cloudData.readable = cloudData.cloud.querySelector('.readable')
     cloudData.content = cloudData.cloud.querySelector('.content')
     cloudData.content.classList.toggle('closed')
 
@@ -83,6 +94,10 @@ function displayCloud(cloud){
 
     cloudData.cloud.style.left = `${cloudData.float.posX}px`
     cloudData.cloud.style.top = `${cloudData.float.posY}px`
+
+    // if (cloudData.readable){
+    //     SimpleScrollbar.initEl(cloudData.readable)
+    // }
 }
 
 function bindCloudEvents(cloud){
@@ -113,8 +128,8 @@ function floatCloud(cloud){
 
         if (boxLeft - cloudSpeed <= 0) cloudData.float.dirX = 1
         if (boxRight + cloudSpeed >= docWidth) cloudData.float.dirX = -1
-        if (boxTop - cloudSpeed <= 0) cloudData.float.dirY = 1
-        if (boxBottom + cloudSpeed >= docHeight) cloudData.float.dirY = -1
+        // if (boxTop - cloudSpeed <= 0) cloudData.float.dirY = 1
+        // if (boxBottom + cloudSpeed >= docHeight) cloudData.float.dirY = -1
 
         if (cloudData.float.dirX == 1 && boxRight + cloudSpeed <= docWidth){
             cloudData.cloud.style.left = cloudData.cloud.offsetLeft + cloudSpeed + 'px'
@@ -124,13 +139,13 @@ function floatCloud(cloud){
             cloudData.cloud.style.left = cloudData.cloud.offsetLeft - cloudSpeed + 'px'
         }
 
-        if (cloudData.float.dirY == 1 && boxBottom + cloudSpeed <= docHeight){
-            cloudData.cloud.style.top = cloudData.cloud.offsetTop + cloudSpeed + 'px'
-        }
+        // if (cloudData.float.dirY == 1 && boxBottom + cloudSpeed <= docHeight){
+        //     cloudData.cloud.style.top = cloudData.cloud.offsetTop + cloudSpeed + 'px'
+        // }
 
-        if (cloudData.float.dirY == -1 && boxTop - cloudSpeed >= 0){
-            cloudData.cloud.style.top = cloudData.cloud.offsetTop - cloudSpeed + 'px'
-        }
+        // if (cloudData.float.dirY == -1 && boxTop - cloudSpeed >= 0){
+        //     cloudData.cloud.style.top = cloudData.cloud.offsetTop - cloudSpeed + 'px'
+        // }
     }, cloudFloatIntervalFrequency)
 }
 
@@ -157,19 +172,20 @@ function openContent(cloud, e){
     }
 
     overlay.classList.add('displayed')
+    close.classList.add('displayed')
     cloudsData[cloud].content.classList.add('opened')
     cloudsData[cloud].content.classList.remove('closed')
 }
 
 function closeContent(e){
     if (
-            (e && e.target !== overlay)
-            || !overlay.classList.contains('displayed')
+            !overlay.classList.contains('displayed')
     ){
         return
     }
 
     overlay.classList.remove('displayed')
+    close.classList.remove('displayed')
 
     for (let cloud of clouds){
         const c = cloudsData[cloud]

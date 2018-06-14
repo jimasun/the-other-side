@@ -1,9 +1,13 @@
 html,
-body,
-.container {
+body {
     margin: 0;
     height: 100%;
     overflow: hidden;
+    font-family: arial;
+}
+
+body {
+    cursor: url(img/cursor.png), auto;
 }
 
 .header {
@@ -12,13 +16,41 @@ body,
     left: 0;
     position: fixed;
     font-size: 18px;
-    font-family: arial;
     font-weight: bold;
     text-align: center;
     padding: 16px;
     border-bottom: 4px;
     border-color: black;
     border-style: solid;
+}
+
+.content {
+    background-image: url(img/cloud_big_1.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    padding-top: 350px;
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-bottom: 320px;
+    height: 380px;
+    width: 500px;
+}
+
+.content .satelite {
+
+}
+
+.content .title {
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}
+
+.content .readable {
+    font-size: 14px;
+    max-height: 330px;
+    overflow-y: auto;
 }
 
 .cloud {
@@ -34,19 +66,36 @@ body,
 
 .opened {
     position: fixed;
-    display: block;
+    display: flex;
+    align-items: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
+    flex-flow: wrap;
 }
 
 .closed {
     display: none;
 }
 
+.displayed {
+    display: block;
+}
+
+#close {
+    background-image: url(img/cloud_big_1.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    right: 0;
+    z-index: 1;
+}
+
 #overlay {
-    display: none;
     position: fixed;
     width: 100%;
     height: 100%;
@@ -56,6 +105,3 @@ body,
     user-select: none;
 }
 
-#overlay.displayed {
-    display: block;
-}
