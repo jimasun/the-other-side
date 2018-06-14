@@ -31,7 +31,6 @@ function loadResources(){
     for (let cloud of clouds){
         cloudsData[cloud] = {
             cloud: codeToNode(require(cloudsPath + cloud + '/cloud.html')),
-            // script: require(cloudsPath + cloud + '/script.js'),
             style: codeToStyle(require(cloudsPath + cloud + '/style.css')),
             content: null
         }
@@ -62,6 +61,11 @@ function displayCloud(cloud){
     const cloudData = cloudsData[cloud],
           variateHeight = Math.random() * maxHeightVar * (Math.random() < .5 ? -1 : 1)
 
+    cloudData.satelite = {
+        el: cloudData.cloud.querySelector('.satelite'),
+        float: false,
+        intervalId: null
+    }
     cloudData.readable = cloudData.cloud.querySelector('.readable')
     cloudData.content = cloudData.cloud.querySelector('.content')
     cloudData.content.classList.toggle('closed')
@@ -110,6 +114,7 @@ function bindCloudEvents(cloud){
     })
     cloudContent.addEventListener('click', function(e){
         openContent(cloud, e)
+        floatSatelite(cloud)
     })
 }
 
@@ -147,6 +152,69 @@ function floatCloud(cloud){
         //     cloudData.cloud.style.top = cloudData.cloud.offsetTop - cloudSpeed + 'px'
         // }
     }, cloudFloatIntervalFrequency)
+}
+
+function floatSatelite(cloud){
+
+    const satelite = cloudsData[cloud].satelite
+
+    const maxDeviation = 50,
+          maxDevLeft = satelite.el.offsetLeft - maxDeviation,
+          maxDevTop = satelite.el.offsetTop - maxDeviation,
+          maxDevRight = satelite.el.offsetLeft + satelite.el.offsetWidth + maxDeviation,
+          maxDevBottom = satelite.el.offsetTop + satelite.el.offsetHeight + maxDeviation,
+          stepFactor = 2,
+          dirChangeSteps = 10,
+          updateInterval = 200
+
+    let stepsSinceDirChange = 0,
+        dirX = Math.random() < .5 ? -1 : 1,
+        dirY = Math.random() < .5 ? -1 : 1
+
+    satelite.float = true
+
+    satelite.intervalId = setInterval(function(){
+
+        if (!satelite.float) {
+            return
+        }
+
+        const sateliteLeftPoint = satelite.el.offsetLeft,
+          sateliteTopPoint = satelite.el.offsetTop,
+          sateliteRightPoint = sateliteLeftPoint + satelite.el.offsetWidth,
+          sateliteBottomPoint = sateliteTopPoint + satelite.el.offsetHeight
+
+        if (stepsSinceDirChange >= dirChangeSteps){
+            dirX = Math.random() < .5 ? -1 : 1
+            dirY = Math.random() < .5 ? -1 : 1
+
+            stepsSinceDirChange = 0
+        }
+
+        if (sateliteLeftPoint - stepFactor <= maxDevLeft) dirX = 1
+        if (sateliteTopPoint - stepFactor <= maxDevTop) dirY = 1
+        if (sateliteRightPoint + stepFactor >= maxDevRight) dirX = -1
+        if (sateliteBottomPoint + stepFactor >= maxDevBottom) dirY = -1
+
+        if (dirX == -1){
+            satelite.el.style.left = satelite.el.offsetLeft - stepFactor + 'px'
+        }
+
+        if (dirY == -1){
+            satelite.el.style.top = satelite.el.offsetTop - stepFactor + 'px'
+        }
+
+        if (dirX == 1){
+            satelite.el.style.left = satelite.el.offsetLeft + stepFactor + 'px'
+        }
+
+        if (dirY == 1){
+            satelite.el.style.top = satelite.el.offsetTop + stepFactor + 'px'
+        }
+
+        stepsSinceDirChange++
+
+    }, updateInterval)
 }
 
 function toggleFloatCloud(cloud, e){
@@ -189,6 +257,10 @@ function closeContent(e){
 
     for (let cloud of clouds){
         const c = cloudsData[cloud]
+
+        if (c.satelite.float){
+            c.satelite.float = false
+        }
 
         if (c.float.paused){
             c.float.paused = false
