@@ -2,8 +2,28 @@
     background-image: url(src/clouds/natalchart/img/cloud.png);
 }
 
-#natalchart .content {
-    background: red;
-    width: 400px;
-    height: 400px;
+#natalchart .name,
+#natalchart .date,
+#natalchart .time,
+#natalchart .place {
+    display: flex;
+    width: 100%;
+}
+
+#natalchart .readable input {
+    font-size: 16px;
+    margin-bottom: 12px;
+    padding: 5px;
+    text-transform: uppercase;
+    box-sizing:border-box;
+    flex: 1;
+    width: 100%;
+    margin-right: 10px;
+}
+
+#natalchart .readable [name='name'],
+#natalchart .readable [name='year'],
+#natalchart .readable [name='format'],
+#natalchart .readable [name='place'] {
+    margin-right: 0;
 }
