@@ -25,7 +25,8 @@ const clouds = [
     docWidth = document.body.offsetWidth,
     cloudSpace = docHeight / clouds.length,
     cloudHeight = .8 * cloudSpace,
-    maxHeightVar = .2 * cloudSpace
+    maxHeightVar = .2 * cloudSpace,
+    transitionDuration = 400 // same as .hidden
 
 function loadResources(){
     for (let cloud of clouds){
@@ -39,8 +40,8 @@ function loadResources(){
 
 function initClouds(){
 
-    overlay.classList.toggle('closed')
-    close.classList.toggle('closed')
+    overlay.classList.add('hidden')
+    close.classList.add('hidden')
 
     overlay.addEventListener('click', function(e){
         closeContent(e)
@@ -53,7 +54,7 @@ function initClouds(){
     for (let cloud of clouds){
         displayCloud(cloud)
         bindCloudEvents(cloud)
-        floatCloud(cloud)
+        // floatCloud(cloud)
     }
 }
 
@@ -63,12 +64,12 @@ function displayCloud(cloud){
 
     cloudData.satelite = {
         el: cloudData.cloud.querySelector('.satelite'),
-        float: false,
+        paused: true,
         intervalId: null
     }
     cloudData.readable = cloudData.cloud.querySelector('.readable')
     cloudData.content = cloudData.cloud.querySelector('.content')
-    cloudData.content.classList.toggle('closed')
+    cloudData.content.classList.add('hidden')
 
     cloudData.float = {
         dirX: Math.random() < .5 ? -1 : 1,
@@ -158,6 +159,8 @@ function floatSatelite(cloud){
 
     const satelite = cloudsData[cloud].satelite
 
+    if (!satelite.el) return
+
     const maxDeviation = 50,
           maxDevLeft = satelite.el.offsetLeft - maxDeviation,
           maxDevTop = satelite.el.offsetTop - maxDeviation,
@@ -171,13 +174,11 @@ function floatSatelite(cloud){
         dirX = Math.random() < .5 ? -1 : 1,
         dirY = Math.random() < .5 ? -1 : 1
 
-    satelite.float = true
+    satelite.paused = false
 
     satelite.intervalId = setInterval(function(){
 
-        if (!satelite.float) {
-            return
-        }
+        if (satelite.paused) return
 
         const sateliteLeftPoint = satelite.el.offsetLeft,
           sateliteTopPoint = satelite.el.offsetTop,
@@ -240,9 +241,15 @@ function openContent(cloud, e){
     }
 
     overlay.classList.add('displayed')
+    overlay.offsetTop // force rendering
+    overlay.classList.add('shown07')
     close.classList.add('displayed')
-    cloudsData[cloud].content.classList.add('opened')
-    cloudsData[cloud].content.classList.remove('closed')
+    close.offsetTop // force rendering
+    close.classList.add('shown')
+
+    cloudsData[cloud].content.classList.add('displayed')
+    cloudsData[cloud].content.offsetTop // force rendering
+    cloudsData[cloud].content.classList.add('shown')
 }
 
 function closeContent(e){
@@ -252,21 +259,24 @@ function closeContent(e){
         return
     }
 
-    overlay.classList.remove('displayed')
-    close.classList.remove('displayed')
+    overlay.classList.remove('shown07')
+    close.classList.remove('shown')
+
+    setTimeout(function(){
+        overlay.classList.remove('displayed')
+        close.classList.remove('displayed')
+    }, transitionDuration)
 
     for (let cloud of clouds){
         const c = cloudsData[cloud]
 
-        if (c.satelite.float){
-            c.satelite.float = false
-        }
+        c.satelite.paused = true
 
-        if (c.float.paused){
-            c.float.paused = false
-            c.content.classList.add('closed')
-            c.content.classList.remove('opened')
-        }
+        c.float.paused = false
+        c.content.classList.remove('shown')
+        setTimeout(function(){
+            c.content.classList.remove('displayed')
+        }, transitionDuration)
     }
 }
 

@@ -10,14 +10,25 @@ body {
     cursor: url(img/cursor.png), auto;
 }
 
-.closed {
-    display: none;
+.hidden {
+    transition-property: opacity, display;
+    transition-duration: .4s;
+    transition-delay: 0s;
+    transition-timing-function: ease-out;
     opacity: 0;
+    display: none;
 }
 
 .displayed {
-    display: block;
-    opacity: 1;
+    display: flex !important;
+}
+
+.shown {
+    opacity: 1 !important;
+}
+
+.shown07 {
+    opacity: .7 !important;
 }
 
 #header {
@@ -39,7 +50,6 @@ body {
     width: 100%;
     height: 100%;
     background: black;
-    opacity: .7;
     z-index: 1;
     user-select: none;
 }
@@ -87,23 +97,14 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    transition-property: opacity;
-    transition-duration: 2s;
-    transition-delay: 0s;
-    transition-timing-function: ease-in-out;
     padding-top: 350px;
     padding-left: 200px;
     padding-right: 200px;
     padding-bottom: 320px;
     height: 380px;
     width: 500px;
-    opacity: 0;
-}
 
-.content.opened {
     position: fixed;
-    display: flex;
-    opacity: 1;
     align-items: center;
     top: 50%;
     left: 50%;
