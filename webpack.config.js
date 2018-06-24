@@ -21,7 +21,8 @@ module.exports = {
           {
             loader: 'html-loader',
             options: {
-              minimize: true
+              minimize: true,
+              attrs: false
             }
           }
         ],
@@ -35,19 +36,19 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              minimize: true,
               root: '/',
               url: false,
-              minimize: true
             }
           }
         ]
       },
-      {
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        loader: 'file-loader',
-        options: {
-        }
-      }
+      // {
+      //   test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+      //   loader: 'file-loader',
+      //   options: {
+      //   }
+      // }
     ]
   }
 }

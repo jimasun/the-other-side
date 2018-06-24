@@ -8,6 +8,8 @@ body {
 
 body {
     cursor: url(img/cursor.png), auto;
+    /*background: linear-gradient(#FFDA00, #DD2844);*/
+    background-color: #000;
 }
 
 .hidden {
@@ -20,15 +22,15 @@ body {
 }
 
 .displayed {
-    display: flex !important;
+    display: flex;
 }
 
 .shown {
-    opacity: 1 !important;
+    opacity: 1;
 }
 
 .shown07 {
-    opacity: .7 !important;
+    opacity: .7;
 }
 
 #header {
@@ -40,9 +42,8 @@ body {
     font-weight: bold;
     text-align: center;
     padding: 16px;
-    border-bottom: 4px;
-    border-color: black;
-    border-style: solid;
+    border-bottom-style: solid;
+    background-color: white;
 }
 
 #overlay {
@@ -63,11 +64,10 @@ body {
     height: 50px;
     position: fixed;
     right: 0;
-    z-index: 3;
+    z-index: 4;
 }
 
 .satelite {
-    background-image: url(img/cloud_big_2.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -87,22 +87,27 @@ body {
     transition-duration: .1s;
     transition-timing-function: linear;
     background-position: center;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     width: 210px;
     height: 120px;
 }
 
+.cloud.active {
+    width: 340px;
+    height: 240px;
+}
+
 .content {
-    background-image: url(img/cloud_big_1.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     padding-top: 350px;
-    padding-left: 200px;
-    padding-right: 200px;
+    padding-left: 250px;
+    padding-right: 250px;
     padding-bottom: 320px;
     height: 380px;
-    width: 500px;
+    width: 400px;
 
     position: fixed;
     align-items: center;
@@ -123,4 +128,84 @@ body {
     font-size: 14px;
     max-height: 330px;
     overflow-y: auto;
+}
+
+.galery {
+    position: fixed;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 3;
+}
+
+.galery.hidden {
+    display: none;
+}
+
+.galery.visible {
+    display: block;
+}
+
+.galery>.chosen {
+    font-size: 18px;
+    text-align: center;
+    position: fixed;
+    transform: translate(-50%,-50%);
+}
+
+.galery>.chosen.shown {
+    display: flex;
+}
+
+.galery>.chosen>.img {
+    width: 50%;
+    height: 100%;
+    margin-right: 10px;
+}
+
+.galery>.chosen>.img>img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.galery>.chosen>.cap {
+    width: 50%;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.galery>.chosen>.cap>.cap {
+    padding: 20px;
+}
+
+.galery>.img-cap {
+    position: fixed;
+    box-shadow: 0px 0px 30px 0px white;
+}
+
+.galery>.img-cap>.img {
+    height: 100%;
+    width: 100%;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.galery>.img-cap>.cap {
+    display: none;
+}
+
+.shape {
+    height: 100%;
+    width: 50%;
+    shape-margin: 2px;
+}
+
+.shape-left {
+    float: left;
+    shape-outside: polygon(70% 0, 40% 10%, 15% 30%, 0 50%, 15% 70%, 40% 90%, 70% 100%, 0 100%, 0 0);
+}
+
+.shape-right {
+    float: right;
+    shape-outside: polygon(30% 0, 60% 10%, 85% 30%, 100% 50%, 85% 70%, 60% 90%, 30% 100%, 100% 100%, 100% 0);
 }

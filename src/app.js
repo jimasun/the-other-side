@@ -3,12 +3,17 @@
 const SimpleScrollbar = require('simple-scrollbar')
 
 const clouds = [
-        'astrology',
         'aurareading',
+        'astrology',
         'chaosmagic',
         'clairvoyance',
+        'tarot',
         'healing',
-        'natalchart',
+        'palmreading',
+        'natalchart'
+    ],
+    cloudsActive = [
+        'astrology',
         'palmreading',
         'tarot'
     ],
@@ -32,6 +37,7 @@ function loadResources(){
     for (let cloud of clouds){
         cloudsData[cloud] = {
             cloud: codeToNode(require(cloudsPath + cloud + '/cloud.html')),
+            script: require(cloudsPath + cloud + '/script.js').default,
             style: codeToStyle(require(cloudsPath + cloud + '/style.css')),
             content: null
         }
@@ -54,7 +60,8 @@ function initClouds(){
     for (let cloud of clouds){
         displayCloud(cloud)
         bindCloudEvents(cloud)
-        // floatCloud(cloud)
+        cloudsData[cloud].script()
+        floatCloud(cloud)
     }
 }
 
@@ -67,9 +74,13 @@ function displayCloud(cloud){
         paused: true,
         intervalId: null
     }
-    cloudData.readable = cloudData.cloud.querySelector('.readable')
+    // cloudData.readable = cloudData.cloud.querySelector('.readable')
     cloudData.content = cloudData.cloud.querySelector('.content')
-    cloudData.content.classList.add('hidden')
+    cloudData.clouddata = cloudData.cloud.querySelectorAll('.clouddata')
+
+    if (cloudsActive.indexOf(cloud) != -1){
+        cloudData.cloud.classList.add('active')
+    }
 
     cloudData.float = {
         dirX: Math.random() < .5 ? -1 : 1,
@@ -267,17 +278,21 @@ function closeContent(e){
         close.classList.remove('displayed')
     }, transitionDuration)
 
-    for (let cloud of clouds){
-        const c = cloudsData[cloud]
+    clouds.forEach(function(v){
+        const c = cloudsData[v]
 
         c.satelite.paused = true
-
         c.float.paused = false
+
+        c.clouddata.forEach(function(v){
+            v.classList.add('hidden')
+        })
+
         c.content.classList.remove('shown')
         setTimeout(function(){
             c.content.classList.remove('displayed')
         }, transitionDuration)
-    }
+    })
 }
 
 function codeToNode(code){
