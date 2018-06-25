@@ -1,22 +1,23 @@
 export default function(){
-    bindEvents()
+    bindEvents('signs')
+    bindEvents('planets')
 }
 
-function bindEvents(){
+function bindEvents(cat){
 
-    let satelite = document.querySelector('#astrology .satelite'),
-        galery = document.querySelector('#astrology>.galery'),
+    let satelite = document.querySelector(`#astrology .satelite.${cat}`),
+        galery = document.querySelector(`#astrology .galery.${cat}`),
         content = document.querySelector('#astrology>.content'),
 
-        items = document.querySelectorAll('#astrology>.galery>.img-cap>.img'),
-        chosen = document.querySelector('#astrology>.galery>.chosen'),
-        chosenImg = document.querySelector('#astrology>.galery>.chosen>.img'),
-        chosenCap = document.querySelector('#astrology>.galery>.chosen>.cap')
+        items = galery.querySelectorAll(`.img-cap>.img`),
+        chosen = galery.querySelector(`.chosen`),
+        chosenImg = galery.querySelector(`.chosen>.img`),
+        chosenCap = galery.querySelector(`.chosen>.cap`)
 
     satelite.addEventListener('click', function(e){
         galery.classList.remove('hidden')
         content.classList.remove('shown')
-        arangeZodiac()
+        arangeSigns(cat)
     });
 
     for (const item of items){
@@ -39,29 +40,45 @@ function bindEvents(){
             chosenImg.appendChild(img)
             chosenCap.appendChild(cap)
 
-            chosen.classList.remove('hidden')
-            chosen.classList.add('shown')
+            setTimeout(function(){
+                chosen.classList.remove('hidden')
+                chosen.classList.add('shown')
+                chosen.offsetWidth
+                chosen.classList.add('opacity')
+            },0)
         });
     }
 }
 
-function arangeZodiac(){
-    const signs = document.querySelectorAll('#astrology .img-cap'),
+function arangeSigns(cat){
+    const signs = document.querySelectorAll(`#astrology .galery.${cat} .img-cap`),
         radius = 300,
         range = 360,
-        steps = 12,
+        steps = signs.length,
         step = range / steps,
+        startAngle = cat == 'planets' ? 0 : -180 + step / 2,
         centerX = (document.body.offsetWidth - signs[0].offsetWidth) / 2,
         centerY = (document.body.offsetHeight - signs[0].offsetHeight) / 2
 
-    let angle = -step,
-        rad = angle * Math.PI / 180
+    let angle = startAngle,
+        rad = null
 
     signs.forEach(function(s){
         angle += step,
         rad = angle * Math.PI / 180
 
-        s.style.left = `${centerX + radius * Math.cos(rad)}px`
-        s.style.top = `${centerY + radius * Math.sin(rad)}px`
+        !function(rad){
+            setTimeout(function(){
+                s.classList.remove('origin')
+                s.style.left = `${centerX + radius * Math.cos(rad)}px`
+                s.style.top = `${centerY + radius * Math.sin(rad)}px`
+            }, 0)
+        }(rad)
     })
+
+    setTimeout(function(){
+        signs[0]
+            .querySelector('.img')
+            .dispatchEvent(new MouseEvent('mouseover'))
+    }, 500)
 }

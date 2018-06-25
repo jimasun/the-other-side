@@ -2,7 +2,7 @@ export default function(){
     bindEvents()
 }
 
-function bindEvents(){
+function bindEvents(cat){
 
     let satelite = document.querySelector('#tarot .satelite'),
         galery = document.querySelector('#tarot>.galery'),
@@ -16,6 +16,7 @@ function bindEvents(){
     satelite.addEventListener('click', function(e){
         galery.classList.remove('hidden')
         content.classList.remove('shown')
+        arrangeSigns()
     });
 
     for (const item of items){
@@ -35,8 +36,32 @@ function bindEvents(){
             chosenImg.appendChild(img)
             chosenCap.appendChild(cap)
 
-            chosen.classList.remove('hidden')
-            chosen.classList.add('shown')
+            setTimeout(function(){
+                chosen.classList.remove('hidden')
+                chosen.classList.add('shown')
+                chosen.offsetWidth
+                chosen.classList.add('opacity')
+            },0)
         });
     }
+}
+
+function arrangeSigns(cat){
+
+    const items = document.querySelectorAll(`#tarot .galery .img-cap`)
+
+    items.forEach(function(s){
+        s.classList.remove('origin')
+    })
+
+    setTimeout(function(){
+        document
+            .querySelector('#tarot>.galery>.img-cap>.img')
+            .dispatchEvent(new MouseEvent('mouseover'))
+    }, 500)
+}
+
+function closeSigns(){
+    s.classList.add('origin')
+    chosen.classList.remove('opacity')
 }

@@ -11,7 +11,8 @@
 }
 
 #tarot .galery {
-    margin: 60px 167px;
+    margin-top: 60px;
+    transform: translate(-50%, -50%);
 }
 
 #tarot .galery>.img-cap {
@@ -22,9 +23,35 @@
     float: left;
 }
 
+#tarot .galery>.img-cap:nth-of-type(13) {
+    clear: left;
+}
+
 #tarot .galery>.chosen {
-    width: 402px;
+    width: 400px;
     height: 330px;
-    top: 70%;
+    top: 472px;
     left: 50%;
+    margin-top: 20px;
+}
+
+#tarot .galery>.chosen>.img {
+    width: 50%;
+    height: 100%;
+    margin-right: 10px;
+}
+
+#tarot .galery>.chosen>.cap {
+    width: 50%;
+    height: 100%;
+    margin-left: 10px;
+}
+
+#tarot .galery>.chosen>.cap>.cap {
+    padding: 20px;
+    background-color: white;
+    overflow: auto;
+    height: 100%;
+    box-sizing: border-box;
+    text-align: left;
 }

@@ -6,8 +6,12 @@
     background-image: url(src/img/cloud_big_1.png);
 }
 
-#astrology .satelite {
-    background-image: url(src/clouds/astrology/img/sphere.gif);
+#astrology .satelite.signs {
+    background-image: url(src/clouds/astrology/img/animation_signs.gif);
+}
+
+#astrology .satelite.planets {
+    background-image: url(src/clouds/astrology/img/animation_planets.gif);
 }
 
 #astrology .galery>.chosen {
@@ -27,9 +31,19 @@
 #astrology .galery>.chosen>.cap {
     position: absolute;
     width: 100%;
+    height: 100%;
     margin: 0;
 }
 
+#astrology .galery>.chosen>.cap>.cap {
+    padding-top: 26px;
+}
+
 #astrology .galery>.chosen>.img {
-    opacity: .9;
+    background-size: cover;
+    background-image: url(src/img/planetbackground.png);
+}
+
+#astrology .galery>.chosen>.img>img {
+    display: none;
 }

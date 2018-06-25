@@ -23,6 +23,9 @@ const clouds = [
     cloudFloatIntervalFrequency = 100,
     overlay = document.querySelector('#overlay'),
     close = document.querySelector('#close'),
+    logo = document.querySelector('#logo'),
+    about = document.querySelector('#about'),
+    aboutClose = document.querySelector('#about .close'),
     header = document.querySelector('#header'),
 
     topmostPos = header.offsetHeight,
@@ -57,6 +60,14 @@ function initClouds(){
         closeContent(e)
     })
 
+    logo.addEventListener('click', function(e){
+        openAbout(e)
+    })
+
+    aboutClose.addEventListener('click', function(e){
+        closeAbout(e)
+    })
+
     for (let cloud of clouds){
         displayCloud(cloud)
         bindCloudEvents(cloud)
@@ -70,7 +81,7 @@ function displayCloud(cloud){
           variateHeight = Math.random() * maxHeightVar * (Math.random() < .5 ? -1 : 1)
 
     cloudData.satelite = {
-        el: cloudData.cloud.querySelector('.satelite'),
+        el: cloudData.cloud.querySelectorAll('.satelite'),
         paused: true,
         intervalId: null
     }
@@ -126,7 +137,7 @@ function bindCloudEvents(cloud){
     })
     cloudContent.addEventListener('click', function(e){
         openContent(cloud, e)
-        floatSatelite(cloud)
+        floatSatelites(cloud)
     })
 }
 
@@ -166,24 +177,30 @@ function floatCloud(cloud){
     }, cloudFloatIntervalFrequency)
 }
 
-function floatSatelite(cloud){
+function floatSatelites(cloud){
+    if (!cloudsData[cloud].satelite.el.length) return
 
-    const satelite = cloudsData[cloud].satelite
+    const satelite = cloudsData[cloud].satelite,
+        sFloatData = [],
+        updateInterval = 200
 
-    if (!satelite.el) return
 
-    const maxDeviation = 50,
-          maxDevLeft = satelite.el.offsetLeft - maxDeviation,
-          maxDevTop = satelite.el.offsetTop - maxDeviation,
-          maxDevRight = satelite.el.offsetLeft + satelite.el.offsetWidth + maxDeviation,
-          maxDevBottom = satelite.el.offsetTop + satelite.el.offsetHeight + maxDeviation,
-          stepFactor = 2,
-          dirChangeSteps = 10,
-          updateInterval = 200
+    satelite.el.forEach(function(e, i){
+        const maxDeviation = 50
 
-    let stepsSinceDirChange = 0,
-        dirX = Math.random() < .5 ? -1 : 1,
-        dirY = Math.random() < .5 ? -1 : 1
+        sFloatData[i] = {
+            dirX: Math.random() < .5 ? -1 : 1,
+            dirY: Math.random() < .5 ? -1 : 1,
+            stepFactor: 2,
+            maxDevLeft: e.offsetLeft - maxDeviation,
+            maxDevTop: e.offsetTop - maxDeviation,
+            maxDevRight: e.offsetLeft + e.offsetWidth + maxDeviation,
+            maxDevBottom: e.offsetTop + e.offsetHeight + maxDeviation,
+            dirChangeSteps: 10 + Math.random() * 5,
+
+            stepsSinceDirChange: 0
+        }
+    })
 
     satelite.paused = false
 
@@ -191,42 +208,59 @@ function floatSatelite(cloud){
 
         if (satelite.paused) return
 
-        const sateliteLeftPoint = satelite.el.offsetLeft,
-          sateliteTopPoint = satelite.el.offsetTop,
-          sateliteRightPoint = sateliteLeftPoint + satelite.el.offsetWidth,
-          sateliteBottomPoint = sateliteTopPoint + satelite.el.offsetHeight
+        satelite.el.forEach(function(e, i){
 
-        if (stepsSinceDirChange >= dirChangeSteps){
-            dirX = Math.random() < .5 ? -1 : 1
-            dirY = Math.random() < .5 ? -1 : 1
+            const sateliteLeftPoint = e.offsetLeft,
+              sateliteTopPoint = e.offsetTop,
+              sateliteRightPoint = sateliteLeftPoint + e.offsetWidth,
+              sateliteBottomPoint = sateliteTopPoint + e.offsetHeight,
+              floatData = sFloatData[i]
 
-            stepsSinceDirChange = 0
-        }
+            if (floatData.stepsSinceDirChange >= floatData.dirChangeSteps){
+                floatData.dirX = Math.random() < .5 ? -1 : 1
+                floatData.dirY = Math.random() < .5 ? -1 : 1
 
-        if (sateliteLeftPoint - stepFactor <= maxDevLeft) dirX = 1
-        if (sateliteTopPoint - stepFactor <= maxDevTop) dirY = 1
-        if (sateliteRightPoint + stepFactor >= maxDevRight) dirX = -1
-        if (sateliteBottomPoint + stepFactor >= maxDevBottom) dirY = -1
+                floatData.stepsSinceDirChange = 0
+            }
 
-        if (dirX == -1){
-            satelite.el.style.left = satelite.el.offsetLeft - stepFactor + 'px'
-        }
+            if (sateliteLeftPoint - floatData.stepFactor <= floatData.maxDevLeft) floatData.dirX = 1
+            if (sateliteTopPoint - floatData.stepFactor <= floatData.maxDevTop) floatData.dirY = 1
+            if (sateliteRightPoint + floatData.stepFactor >= floatData.maxDevRight) floatData.dirX = -1
+            if (sateliteBottomPoint + floatData.stepFactor >= floatData.maxDevBottom) floatData.dirY = -1
 
-        if (dirY == -1){
-            satelite.el.style.top = satelite.el.offsetTop - stepFactor + 'px'
-        }
+            if (floatData.dirX == -1){
+                e.style.left = e.offsetLeft - floatData.stepFactor + 'px'
+            }
 
-        if (dirX == 1){
-            satelite.el.style.left = satelite.el.offsetLeft + stepFactor + 'px'
-        }
+            if (floatData.dirY == -1){
+                e.style.top = e.offsetTop - floatData.stepFactor + 'px'
+            }
 
-        if (dirY == 1){
-            satelite.el.style.top = satelite.el.offsetTop + stepFactor + 'px'
-        }
+            if (floatData.dirX == 1){
+                e.style.left = e.offsetLeft + floatData.stepFactor + 'px'
+            }
 
-        stepsSinceDirChange++
+            if (floatData.dirY == 1){
+                e.style.top = e.offsetTop + floatData.stepFactor + 'px'
+            }
 
+            floatData.stepsSinceDirChange++
+        })
     }, updateInterval)
+}
+
+function openAbout(){
+    about.classList.add('displayed')
+    about.offsetWidth
+    about.classList.add('shown')
+}
+
+function closeAbout(){
+    about.classList.remove('shown')
+
+    setTimeout(function(){
+        about.classList.remove('displayed')
+    }, transitionDuration)
 }
 
 function toggleFloatCloud(cloud, e){
@@ -270,6 +304,13 @@ function closeContent(e){
         return
     }
 
+    const gallery = document.querySelector(`.galery:not(.hidden)`)
+
+    if (gallery){
+        closeGallery(gallery)
+        return
+    }
+
     overlay.classList.remove('shown07')
     close.classList.remove('shown')
 
@@ -293,6 +334,30 @@ function closeContent(e){
             c.content.classList.remove('displayed')
         }, transitionDuration)
     })
+}
+
+function closeGallery(gallery){
+    gallery
+        .classList
+        .add('hidden')
+
+    gallery
+        .querySelector(`.chosen`)
+        .classList
+        .remove('opacity')
+
+    gallery
+        .querySelectorAll(`.img-cap`)
+        .forEach(function(e){
+            e.classList.add('origin')
+            e.style = null
+        })
+
+    gallery
+        .parentElement
+        .querySelector('.content')
+        .classList
+        .add('shown')
 }
 
 function codeToNode(code){
