@@ -3,4 +3,9 @@
 }
 
 #palmreading .content {
+    background-image: url(src/img/cloud_big_2.png);
+}
+
+#palmreading .content .readable {
+    margin-top: -30px;
 }
